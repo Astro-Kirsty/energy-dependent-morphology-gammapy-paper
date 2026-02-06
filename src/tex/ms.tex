@@ -1,62 +1,192 @@
-% Define document class
-\documentclass[twocolumn]{aastex631}
+\documentclass{aa}  
 
-% Add here any additional package you need
-% \usepackage{foo}
-
-% If you can, leave this package for last
 \usepackage{showyourwork}
 
-% Begin!
-\begin{document}
+\usepackage{graphicx}
+\usepackage{txfonts}
 
-% Title
-\title{An open source scientific article}
+\usepackage[fleqn]{amsmath}
+\usepackage{array, amssymb}
+\usepackage[T1]{fontenc}   
+\usepackage{url}
+\usepackage{booktabs} 
 
-% Author list
-\author{@Astro-Kirsty}
+\usepackage{hyperref}
 
-% Abstract with filler text
-\begin{abstract}
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-    Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
-    Curabitur dictum gravida mauris, consectetuer id, vulputate a, magna.
-    Donec vehicula augue eu neque, morbi tristique senectus et netus et.
-    Mauris ut leo, cras viverra metus rhoncus sem, nulla et lectus vestibulum.
-    Phasellus eu tellus sit amet tortor gravida placerat.
-    Integer sapien est, iaculis in, pretium quis, viverra ac, nunc.
-    Praesent eget sem vel leo ultrices bibendum.
-    Aenean faucibus, morbi dolor nulla, malesuada eu, pulvinar at, mollis ac.
-    Curabitur auctor semper nulla donec varius orci eget risus.
-    Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam.
-    Duis eget orci sit amet orci dignissim rutrum.
-\end{abstract}
+\makeatletter
+\newcommand*\mysize{%
+  \@setfontsize\mysize{6.5}{9.0}%
+}
+\makeatother
 
-% Main body with filler text
+\usepackage{xcolor}
+\definecolor{keywordcol}{rgb}{0.00, 0.44, 0.13}
+\definecolor{stringcol}{rgb}{0.73, 0.13, 0.13}
+\definecolor{numbercolor}{rgb}{0.25, 0.63, 0.44}
+\definecolor{identifiercolor}{rgb}{0.0, 0.0, 1.0}
+\usepackage{listings}
+\lstdefinestyle{mypython}{
+    language=Python,
+    frame=lines,
+    basicstyle=\ttfamily\mysize, % adjust font size here
+    keywordstyle=\color{keywordcol}\bfseries,
+    commentstyle=\color{gray},
+    numberstyle=\color{numbercolor},
+    stringstyle=\color{stringcol},
+    showstringspaces=false,
+    breaklines=true,
+    rulecolor=\color{black},
+}
+
+\usepackage{xspace}
+\newcommand{\gray}{$\gamma$-ray\xspace}
+\newcommand{\grays}{$\gamma$-rays\xspace}
+\newcommand{\hessj}{HESS\,J1825$-$137\xspace}
+\newcommand{\psr}{PSR\,B1823$-$13\xspace}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\usepackage{orcidlink} 
+
+\begin{document} 
+
+   \title{Energy-dependent gamma-ray morphology estimation tool in Gammapy}
+
+   \author{K. Feijen\thanks{Email: kirsty.feijen@gmail.com} \inst{1}\orcidlink{0000-0003-1476-3714}
+          \and R. Terrier \inst{1}\orcidlink{0000-0002-8219-4667}
+          \and B. Khélifi \inst{1}\orcidlink{0000-0001-6876-5577}
+          \and A. Sinha \inst{2}
+          \and A. Donath \inst{3}\orcidlink{0000-0003-4568-7005}
+          \and A. Mitchell \inst{4}\orcidlink{0000-0003-3631-5648}
+          \and Q. Remy \inst{5}\orcidlink{0000-0002-8815-6530}
+          }
+
+   \institute{Universit\'e Paris Cit\'e, CNRS, Astroparticule et Cosmologie, F-75013 Paris, France \\
+    \and Tata Institute of Fundamental Research, 1 Homi Bhabha Road, Colaba, Mumbai, 400 005, India\\
+    \and Center for Astrophysics | Harvard \& Smithsonian, 60 Garden Street, Cambridge, MA\\
+    \and Friedrich-Alexander-Universit\"at Erlangen-N\"urnberg, Erlangen Centre for Astroparticle Physics, Nikolaus-Fiebiger-Str. 2, 91058 Erlangen, Germany\\
+    \and Max-Planck-Institut f\"ur Kernphysik, P.O. Box 103980, D 69029 Heidelberg, Germany\\
+             }
+
+   \date{Received 18 April 2025 / Accepted 22 July 2025}
+
+ 
+  \abstract
+   {An understanding of the energy dependence of gamma-ray sources can yield important information on the underlying emission mechanisms. However, despite the detection of energy-dependent morphologies in many TeV sources, we lack a proper quantification of such measurements.}
+   {We introduce an estimation tool within the Gammapy landscape, an open-source Python package for the analysis of gamma-ray data, for quantifying the energy-dependent morphology of a gamma-ray source.}
+   {The proposed method  fits the spatial morphology in a global fit across all energy slices (null hypothesis) and compares this to separate fits for each energy slice (alternative hypothesis). These are modelled using forward-folding methods, and the significance of the variability is quantified by comparing the test statistics of the two hypotheses.}
+   {We present a general tool for probing changes in the spatial morphology with energy, employing a full forward-folding approach with a 3D likelihood. We present its usage on a real dataset from H.E.S.S. and on a simulated dataset to quantify the significance of the energy dependence for sources of different sizes. In the first example, which utilises a subset of data from \hessj, we observe extended emission at lower energies that becomes more compact at higher energies. The tool indicates a very significant variability ($9.8\sigma$) in the case of the largely extended emission. In the second example, a source with a smaller extent ($\sim0.1^{\circ}$), simulated using the CTAO response, shows the tool can still provide a statistically significant variation ($9.7\sigma$) on small scales.}
+   {}
+
+   \keywords{VHE Gamma-ray phenomena -- Analysis techniques -- Energy-dependent propagation}
+
+   \maketitle
+
+
 \section{Introduction}
 \label{sec:intro}
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-Ut purus elit, vestibulum ut, placerat ac, adipiscing vitae, felis.
-Curabitur dictum gravida mauris, consectetuer id, vulputate a, magna.
-Donec vehicula augue eu neque, morbi tristique senectus et netus et.
-Mauris ut leo, cras viverra metus rhoncus sem, nulla et lectus vestibulum.
-Phasellus eu tellus sit amet tortor gravida placerat.
-Integer sapien est, iaculis in, pretium quis, viverra ac, nunc.
-Praesent eget sem vel leo ultrices bibendum.
-Aenean faucibus, morbi dolor nulla, malesuada eu, pulvinar at, mollis ac.
-Curabitur auctor semper nulla donec varius orci eget risus.
-Duis nibh mi, congue eu, accumsan eleifend, sagittis quis, diam.
-Duis eget orci sit amet orci dignissim rutrum.
+Detecting variations in the morphology of gamma-ray sources with energy can offer useful insight into their underlying physical mechanisms. However, measuring and quantifying these variations remains difficult. These energy-dependent morphologies are expected in a variety of astrophysical sources, including pulsar wind nebulae (PWNe), supernova remnants (SNRs), and relativistic jets. It can therefore be helpful to look for any evidence of this energy dependence.
 
-Nam dui ligula, fringilla a, euismod sodales, sollici- tudin vel, wisi.
-Morbi auctor lorem non justo, nam lacus libero, pretium at, lobortis vitae.
-Donec aliquet, tortor sed accumsan bibendum, erat ligula aliquet magna.
-Morbi ac orci et nisl hendrerit mollis, suspendisse ut massa, cras nec ante.
-Pellentesque a nulla cum sociis natoque penatibus et magnis dis parturient.
-Aliquam tincidunt urna, nulla ullamcorper vestibulum turpis.
-Pellentesque cursus luctus mauris \citep{Luger2021}.
+The evolutionary phases of a PWN lead to a unique gamma-ray morphology \citep{Gaensler_2006}. The emission is expected to be compact and close to the pulsar position at high energies. However, for lower energies, the emission is expected to be more extended, with an offset from the pulsar position. Radiative cooling, either via synchrotron emission in magnetic fields or the inverse Compton scatter of ambient photon fields, leads to higher energy electrons losing energy faster. This creates a spectral steepening with distance. Another physical process at play is the energy-dependent diffusion of particles, in which high-energy particles diffuse more efficiently than the lower energy ones. An energy-dependent morphology can also be attributed to the bulk motion of particles in the PWN outflow. Advection-dominated transport in this case leads to a spatial distribution that is dependent on the energy loss timescale.
+Conversely, for SNRs with uniform gas densities, we expect the gamma-ray emission at lower energies to be concentrated to the central SNR position and the high-energy emission to be farther away \citep{2019_edep_SNR,2021_edep_SNR}. 
+Relativistic jets, such as those observed in microquasars, are also expected to exhibit an energy-dependent morphology along their extent \citep{SS433_Laura_2024}.
 
-\bibliography{bib}
+The High Energy Stereoscopic System (H.E.S.S.) has detected several sources exhibiting energy-dependent morphologies. Examples include evolved PWNe such as HESS\,J1303$-$631 \citep{Edep_J1303_2012} and \hessj, where the nebula size increases with decreasing energy. \hessj is a well-known example of a PWN that shows a clear energy-dependent gamma-ray morphology \citep{Edep_PWNe_HESS_2006,Edep_PWNe_HESS_2019,Edep_Principe_2020}. A compact nebula with an extended diffuse nebula and an asymmetric morphology was discovered in X-rays towards \psr  \citep{Finley_1996}. \cite{HESS_2005} discovered an extended very high-energy (VHE) gamma-ray nebula towards this region, designated \hessj. The size of the nebula is seen to increase with decreasing energy \citep{Edep_PWNe_HESS_2019}. At low energies ($< 32$\,TeV) the emission nebula is extended, with its peak offset from the position of \psr. For higher energies ($> 32$\,TeV), the emission is more compact and close to the pulsar position. This behaviour indicates that the gamma-ray emission towards \hessj originates from PSR\,B1823$-$13 as a PWN. 
+
+SS\,433 was the first microquasar to be detected at TeV energies \citep{HAWC_micro_2018,SS433_Laura_2024}. The H.E.S.S. gamma-ray image, with the nearby extended emission from HESS\,J1908$+$063 modelled out, reveals two regions of emission, known as the eastern and western jets. No TeV emission is significantly detected from the central source. At the highest energies (>10 TeV), the emission appears only in the base of the X-ray jets, i.e. the point closest to the central source. In contrast, the lower energy gamma rays (0.8–2.5 TeV and 2.5–10 TeV) peak in significance at positions farther along the jets. 
+
+Various techniques, applicable in different scenarios, have been utilised to search for energy dependence. These include the comparison of spectral indices across different regions or energy bins in a map \citep{Edep_PWNe_HESS_2006}, slicing spatial maps into different energy bands and comparing their extension to a model fit (see examples of Gaussian spatial model fits in \citealt{Edep_J1303_2012}, \citealt{Edep_Principe_2020}, and \citealt{Edep_MAGIC_2020}), comparing radial profiles \citep{Edep_Principe_2020}, and many other techniques. 
+Energy-dependent morphology is a key observable for studying the nature of a VHE gamma-ray source. 
+Here, we present a new tool in the Gammapy framework \citep{gammapy_ref,gammapy_zenodo_12} for investigating the potential energy-dependent morphology towards a gamma-ray source. 
+This method utilises maps across multiple energy bands to fit the morphological parameters of the source, such as position and extension. 
+The user defines the best-fit model for the morphology and spectrum. 
+A global fitting approach is applied, and then an individual fit is performed in each energy band to assess if the morphology changes significantly.
+
+
+\section{Methodology}
+\label{sec:methods}
+In this section we describe various methods for measuring the energy dependence of gamma-ray sources, highlighting their respective advantages and disadvantages. 
+
+One common approach is spatially resolved spectral analysis \citep{Aharonian_2006,2006_RXJ}. This technique can be used to search for a softening of the gamma-ray emission away from the pulsar position in a PWN scenario, which provides the evidence of an energy-dependent morphology.
+The signal region is divided into non-overlapping subregions. A spectral model, typically a power law, is fit in each subregion independently to search for changing photon index across the source region \citep{2006_RXJ}. This approach offers a simple method of analysing the spectra, particularly for variations in spectral shape. However, this method has its limitations. The choice of region size and number of regions can strongly influence the result, leading to potential biases. The astrophysical background is difficult to determine accurately for each region, the estimation for different regions are typically not independent. These limitations are more significant for small subregions that approach the resolution of the point spread function (PSF), making this method better suited to more extended sources. Quantifying the significance of spectral variability across these subregions remains a challenge.
+
+Another method involves creating radial excess profiles along a specific axis \citep{HESS_2012,Edep_PWNe_HESS_2019,Edep_Principe_2020}. The distribution of the emission is analysed by extracting the excess counts from specific regions in a specific orientation from the source position. This is useful to visualise changing spatial features such as extension and intensity. 
+It is important to note that they do not take into account the PSF or variations in exposure. 
+Radial profiles offer a model-independent method for assessing the spatial variations, allowing for an unbiased way of visualising the data. However, they assume radial symmetry within the region, which may not always be a valid approximation. Additionally, this method is highly sensitive to the selected axis direction of the profile and the choice of the radial bins. Another limitation is the difficulty in handling background systematics. Consequently, these dependencies make it a less robust analysis. 
+Additionally, variations in the exposure across the field of view can change the excess distribution, meaning the excess partially reflects these exposure variations rather than the source properties itself. For example, a decrease in excess counts may be misinterpreted as a physical or temporal effect, when it is, in fact, stemming from the exposure variation. This makes deriving the true significance of the effect a challenge. 
+While traditionally overlooked, accounting for exposure variation is now possible with the introduction of methods like the \code{FluxProfileEstimator} in Gammapy. This, however, still does not account for contributions from additional sources within the field of view or analysing variations on small spatial scales.
+
+The final method discussed here involves slicing the spatial maps in different energy bins and estimating the extension of the source \citep{Edep_Principe_2020} by taking into account all instrument response functions (IRFs), then deconvolving from both instrumental and exposure effects. In this case, a model is utilised to fit the morphological parameters of the source in these energy bins, providing valuable insight into the spatial evolution of the emission. While this approach allows for a detailed fitting, treating the fitted parameters independently can lead to an underestimation of the trial factors, thereby reducing the reliability of the results. Along with the other limitations discussed previously, this shows the need for a more robust global testing method. 
+In some cases, it may be possible to directly fit a custom parametric model with energy-dependent position and size. However, such models require an initial understanding of the expected changes in the spatial parameters.
+
+We propose a new method that addresses each of the limitations described above, to quantify the energy-dependent morphology with a proper statistical assessment. This technique utilises a full forward-folding approach, where a morphological fit is conducted across various energy slices and compared with a global morphology fit. The technique chosen here involves fitting a spatial model and comparing the differences in morphological parameters (such as extension and position) in different energy bins. 
+Further information about the tool and examples can be found in Sects. \ref{sec:description} and \ref{sec:examples}, respectively.
+
+In gamma-ray astronomy we often utilise hypothesis testing. We rely on Wilks' theorem \citep{Wilks}, which is a log-likelihood ratio test that allows us to estimate the relative significance through the test statistic ($\Delta\rm{TS}$),
+
+\begin{equation}
+\Delta\rm{TS} = -2 \ln \lambda = -2 \ln \left( \dfrac{\mathcal{L}_0^{\rm{max}}}{\mathcal{L}_1^{\rm{max}}} \right) \, ,
+\label{eqn:delta_ts}
+\end{equation}where $\mathcal{L}_0^{\rm{max}}$ and $\mathcal{L}_1^{\rm{max}}$ represent the maximum likelihood of the model under the null and alternative hypotheses, respectively. 
+Under the correct conditions, where the two models are nested, and the regularity conditions are satisfied, we expect the distribution of $\Delta\rm{TS}$ to asymptotically approach a $\chi^2$ function with $m$ degrees of freedom, the difference in number of free parameters between the two nested hypotheses. 
+Therefore, for a large enough sample it is possible to compute the $\Delta\rm{TS}$ and compare to a chi-squared function with the correct degrees of freedom to test the statistical significance. 
+
+For our tool, the null hypothesis (H$_0$) is defined by a global fit. Initially, the morphological parameters are fit in the first energy band. The resulting parameters are then applied to all subsequent energy bands and a fit is performed across the different energy bands. The alternative hypothesis (H$_1$) is defined by individual fits. Here, the dataset is divided into energy bins, and both the spatial and spectral models are fitted independently in each energy band. We apply Wilks' theorem to these hypotheses to obtain the $\Delta\rm{TS}$ (see Eq. \ref{eqn:delta_ts}). The $\Delta\rm{TS}$ is converted into a significance value through the survival function of the chi-squared distribution. 
+Thus, this method provides a quantitative measure of how much the morphology deviates from the null model for each energy band. 
+
+
+\section{Implementation}
+\label{sec:description}
+The above algorithm was introduced in Gammapy v1.2 \citep{gammapy_ref, gammapy_zenodo_12} in a dedicated class called the \code{EnergyDependentMorphologyEstimator}. Users begin by using a previously optimised model on the relevant source of interest. This estimator runs on a \code{MapDataset} object, which combines the IRFs, counts, background and models in the region of interest.
+Representing a 3D cube with two spatial dimensions and an energy axis, this dataset enables both spectral and morphological fitting, which is of interest here.
+
+To test for energy-dependent morphology using our tool, one begins by dividing the \code{MapDataset} into different energy bins, as specified by the user. Firstly, we allow (at a minimum) the position and extension of the \code{SpatialModel} to be free, along with the amplitude of the \code{SpectralModel} and normalisation of the background. 
+It is up to the user to define which spatial parameters are to be kept free. 
+For example, for a \code{GaussianSpatialModel} there are five free parameters --- longitude, latitude, sigma, phi, and e. It is up to the user to make a judicious choice to freeze or free these parameters. In this case, longitude, latitude, and sigma are kept free.
+For a proper energy-dependent investigation, it is necessary to keep at least the position and extension free. This enables us to detect any change in the position or size of the gamma-ray source across different energy bands. 
+The spectral index can be poorly constrained, particularly when fitting in small energy bands. Therefore, it is recommended to assume a given spectral shape while allowing the amplitude to be fit. This re-normalisation can account for any small variations in the spectrum. 
+
+Whilst there are several \code{SpatialModel}s available in Gammapy, it is necessary to select a model that accurately represents the morphology of the gamma-ray source. \code{SpatialModel}s such as the \code{DiskSpatialModel} and \code{ShellSpatialModel}, assume sharp edges, which are often not a good representation of the data, particularly across multiple energy bands. 
+In contrast, the \code{GaussianSpatialModel} is able to represent the smooth features observed in gamma-ray morphology, particularly when the morphology varies with energy. This makes it a robust default for many analyses.
+Alternative models should be used with caution and only when clearly justified by the data.
+A usage example is shown in Fig. \ref{fig:code_snippet}, corresponding to the example in Sect. \ref{subsec:example2}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Conclusion}
+There are several methods for determining the energy dependence of a gamma-ray source. Here we have introduced a method in the Gammapy framework that involves the comparison of the spatial model in different energy bins. This method provides a full statistical assessment of the energy dependence, which is often difficult to quantify. 
+We show two examples to demonstrate the capabilities of the tool. 
+The first example uses H.E.S.S. data towards \hessj, which shows an energy-dependent morphology with a significance of 9.8$\sigma$: the emission is more extended at lower energies and is smaller near the pulsar position at higher energies. The second example examines a weakly extended PWN, modelled using a mock dataset, revealing an energy-dependent morphology with a significance of 9.7$\sigma$ despite the small spatial scale approaching the instrument’s PSF. 
+This is an important advancement as it will allow us to resolve the gamma-ray morphology in different energy bands in detail with the upcoming CTAO. With its improved angular resolution and sensitivity, and broader energy coverage compared to current instruments, CTAO will provide important insights into the structure of these sources. 
+Morphology studies become more feasible with CTAO's improved PSF, allowing the study of sources with extensions close to the PSF size.
+
+We assessed the accuracy of our technique by conducting a number of tests on a mock dataset that exhibits an energy-dependent morphology. We utilised 1000 simulations to ensure the method is robust. 
+In general, we find that these results are in good agreement with those derived from established statistical equations and methods. 
+
+\begin{acknowledgements}
+We thank the H.E.S.S. collaboration for allowing us to employ the data used in this publication. 
+This paper describes a tool within Gammapy, which is a core Python package in TeV gamma-ray astronomy. We acknowledge the Gammapy development team and any users which provided feedback. In addition, we also acknowledge Astropy \citep[a Python package with which we are affiliated with,][]{2013_astropy}, and other important Python packages we depend on: Numpy, Scipy and Matplotlib.
+\end{acknowledgements}
+
+
+\bibliographystyle{aa}
+\bibliography{bibliography}
+
+
+
+
+
 
 \end{document}
