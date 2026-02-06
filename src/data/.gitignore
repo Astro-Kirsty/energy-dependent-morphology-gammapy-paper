@@ -1,4 +1,6 @@
 # Nothing in this folder should be tracked by git
 *
 !.gitignore
-!*.py
+!*.fits
+!*.dat
+!*.csv
