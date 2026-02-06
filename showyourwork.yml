@@ -31,10 +31,8 @@ datasets:
 
 # Custom file dependencies
 dependencies:
-  # src/scripts/my_script.py:
-  #   - src/data/dataset_for_my_script.dat
-  # src/tex/ms.tex:
-  #   - src/tex/stylesheet.tex
+  src/scripts/fig2.py:
+    - src/data/significance_map_J1825.fits
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
