@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import paths
 
 significance_cutout = Map.read(paths.data / 'significance_map_J1825.fits')
+PSR_position = SkyCoord(l=18.00018*u.deg, b=-0.69093*u.deg, frame='galactic')
 
 def add_psr(ax, color='mediumturquoise'):
     psr_region = Circle((PSR_position.l.value, PSR_position.b.value), 0.05,
