@@ -33,6 +33,7 @@ datasets:
 dependencies:
   src/scripts/fig2.py:
     - src/data/significance_map_J1825.fits
+    - src/scripts/paths.py
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms
