@@ -28,9 +28,9 @@ First you need to fork this repo and clone it to your local machine:
 Then you can create and activate the conda environment there:
 
     conda env create -f environment.yml
-    conda activate edep-syw-paper
+    conda activate edep-paper
     
-Finally, you can user `showyourwork` to build the paper and figures:
+Finally, you can install and then use `showyourwork` to build the paper and figures:
 
     showyourwork build
 
