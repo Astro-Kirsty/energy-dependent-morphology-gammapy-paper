@@ -219,26 +219,99 @@ It is important to verify that the output of the energy-dependent estimator tool
 \end{figure}
 
 
+\section{Validations}
+As previously mentioned, Wilks' theorem \citep{Wilks} states that the $\Delta$TS follows a chi-squared distribution for a large number of samples. To validate the accuracy of our method, we needed to conduct tests to ensure this holds true. We utilised a bootstrap parametric method in which the same method as the energy-dependent tool was used. 
+We generated a simulated Poisson distributed dataset based on the model of interest for the chosen source. This mock dataset consisted of 10\,hours of observations based on the CTAO IRFs \citep{CTAO_IRFs} and exhibits a clear energy-dependent morphology. 
+This simulation was performed 1000 times, resulting in a large sample set that contains the various parameters of interest including $\Delta$TS, as well as the latitude, longitude, and sigma for each sample. Figure \ref{fig:delta_TS} shows how the $\Delta\rm{TS}$ is distributed compared to the expected chi-squared function, with six degrees of freedom corresponding to the difference in the number of free parameters between the null and alternative hypotheses, as described in \autoref{sec:methods}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/deltaTS_mock_3ebands.pdf}
+\caption{Distribution of the samples of $\Delta$TS, calculated through Eq. \ref{eqn:delta_ts}, for each of the 1000 simulations. The expected chi-squared function has six degrees of freedom, which is the difference between the number of free parameters in the global fit (H$_0$) versus the individual fits (H$_1$).}
+\label{fig:delta_TS}
+\script{validation1.py}
+\end{figure}
+
+The significance of the results from the energy-dependent estimator tool can also be expressed as the chi-square values for each parameter, $p$:
+\begin{equation}
+\chi_p^2 = \sum_i \dfrac{(x_i - \hat{\mu})^2}{\sigma^2}  \, ,
+\label{eqn:chi2}
+\end{equation}where $\hat{\mu}$ is the weighted mean (weighted by $1/\sigma_i$) and $x_i$ indicates the parameter value for each energy bin. It is important to note that the chi-squared parameter does not include potential correlation between the parameters, so it should be utilised cautiously. 
+
+Figure \ref{fig:chi2} shows the distribution of the weighted chi-squared values for each of the free spatial parameters (longitude, latitude and sigma) calculated via Eq. \ref{eqn:chi2} for each sample set. The results follow a $\chi^2$ distribution, with the number of degrees of freedom corresponding to the number of energy bands minus one.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/chi2_mock_3ebands.pdf}
+\caption{Distribution of $\chi_p^2$ values as calculated through Eq. \ref{eqn:chi2} for each of the free parameters in the energy-dependent estimator tool.}
+\label{fig:chi2}
+\script{validation2.py}
+\end{figure}
+
+The distributions in Figs. \ref{fig:delta_TS} and \ref{fig:chi2} show good agreement with Eq. \ref{eqn:chi2}, especially where the sample density is highest. The deviations between the simulated distribution and the corresponding line equation, especially in the tail regions, are likely attributed to having an insufficient number of samples. Insufficient sampling can also lead to statistical fluctuations, resulting in decreased precision therefore making it harder for the simulated data to perfectly match the theoretical expectation. 
+To test the compatibility of these we utilised a Kolmogorov-Smirnov test for goodness of fit. Typically a threshold p-value of 0.05 is utilised to indicate the data are compatible with the expected function. 
+Comparison between the $\Delta$TS and expected chi-squared function in Fig. \ref{fig:delta_TS} leads to a p-value=0.097, supporting the notion that there is no significant difference between the two.
+We perform the same test for Fig. \ref{fig:chi2} on the $\chi_p^2$ values, assuming they follow the expected chi-squared function with two degrees of freedom, and find a p-value$>0.05$ for each, providing evidence that the two are compatible.
 
 
+The $\chi_p^2$ values for each parameter (as shown in Fig. \ref{fig:chi2}) are calculated using Eq. \ref{eqn:chi2}. For each sample set, the three $\chi_p^2$ values (for sigma, longitude and latitude) are compared and the largest value is taken as the `$\max(\chi_p^2)$'. It is expected that these maximum values follow a specific distribution function:
 
 
+\begin{equation}
+P = N \, f(x, df) (F(x,df))^{N-1}
+\label{eqn:P_value_chi2}
+,\end{equation}where $N$ is the number of parameters, $f(x, df)$ is the probability density function (PDF) and $F(x,df)$ is the cumulative density function (CDF). Here, $x$ are the $\max(\chi_p^2)$ values and $df$ are the number of energy bands minus one. 
+The derivation of Eq. \ref{eqn:P_value_chi2} is shown in Sect. \ref{sec:calc_chi2_max}. The distribution of the $\max(\chi_p^2)$ values, along with the expected function (Eq. \ref{eqn:P_value_chi2}) are shown in Fig. \ref{fig:chi2_maximum}. 
 
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/chi2_maximums_3ebands.pdf}
+\caption{Distribution of the $\max(\chi_p^2)$ value (longitude, latitude, or sigma) for each simulation.}
+\label{fig:chi2_maximum}
+\script{validation3.py}
+\end{figure}
 
 
+The next step involves the comparison of the two distinct methods for calculating the significance, namely $\Delta$TS and $\chi^2$. This allows us to determine the compatibility of the results obtained from the two methods. 
+As both the $\Delta$TS and max$(\chi_p^2)$ functions follow a $\chi^2$ distribution, we can directly compare their relationship on a scatter plot, as presented in the top panel of Fig. \ref{fig:sensitivity2}. 
+It is worth reiterating that the $\Delta$TS method is the recommended approach, as it accounts for correlations between parameters, in contrast to the $\chi_p^2$ statistic, which treats each parameter independently. As a result, we do not necessarily expect a one-to-one relationship between the two.
+We can also compare the p-values derived from each method. 
+The equation for the p-value corresponding to the $\max(\chi_p^2)$ values is defined as follows:
+
+\begin{equation}
+p_{\rm{value}, \chi^2} = 1 - F(\max(\chi_p^2), df)^N \, ,
+\label{eqn:pvalue_chi2}
+\end{equation}where $F$ is the CDF that gives the probability of the random variable $X$ being less than or equal to $x$. The number of degrees of freedom, $df$, is equal to the number of energy bands minus one and $N$ is the number of parameters of interest, in this case equal to three. 
+
+The p-value for the $\Delta$TS is calculated through\begin{equation}
+    p_{\rm{value}, \Delta\rm{TS}} = s(\Delta\mathrm{TS}, df)
+\label{eqn:pvalue_TS}
+,\end{equation}where $s$ is the survival function (also defined as $1 - F$, where $F$ denotes the CDF). The number of degrees of freedom from the $\Delta$TS calculations is given by $df$, which in this case is equal to six. 
+The comparison of the p-value from these methods are shown in the middle panel of Fig. \ref{fig:sensitivity2}. 
+
+Finally, we can also determine the expected significance from each of the aforementioned methods through the following equations. 
+For the $\max(\chi_p^2)$ values the significance is calculated through
+
+\begin{equation}
+\sigma_{\chi^2} = s^{-1}(0.5 * p_{\rm{value}, \chi_p^2})
+\label{eqn:sig_chi2}
+.\end{equation}The significance from the $\Delta$TS value is given by
+
+\begin{equation}
+\sigma_{\Delta\rm{TS}} = \sqrt{s^{-1}(p_{\rm{value}, \Delta\rm{TS}}, df=1)} \, ,
+\label{eqn:sig_TS}
+\end{equation}where $s^{-1}$ is the inverse survival function (inverse of $s$).
+The comparison of the distribution of significance for each method is shown in the bottom panel of Fig. \ref{fig:sensitivity2}. The middle and bottom panels of Fig.\ref{fig:sensitivity2} include a black dashed line corresponding to unity ($x=y$), serving as a visual reference for assessing agreement between the two distributions.
 
 
-
-
-
-
-
-
-
-
-
-
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/sensitivity_3ebands.pdf}
+\caption{Comparison of the $\Delta$TS and $\chi^2$ methods. \textit{Top}: Direct comparison of $\Delta$TS (Eq. \ref{eqn:delta_ts}) with the $\max(\chi_p^2)$ value (Eq. \ref{eqn:chi2}) from the three parameters (longitude, latitude, or sigma) for each simulation. \textit{Middle}: p-values for the $\Delta$TS and $\max(\chi_p^2)$ method as calculated through Eqs. \ref{eqn:pvalue_TS} and \ref{eqn:pvalue_chi2}, respectively. \textit{Bottom}: Significance for the $\Delta$TS and $\max(\chi_p^2)$ method as calculated through Eqs. \ref{eqn:sig_TS} and \ref{eqn:sig_chi2}, respectively. The dashed black line in the middle and bottom panels shows the line of unity ($x=y$). }
+\label{fig:sensitivity2}
+\script{validation4.py}
+\end{figure}
 
 
 \section{Conclusion}
@@ -256,11 +329,48 @@ We thank the H.E.S.S. collaboration for allowing us to employ the data used in t
 This paper describes a tool within Gammapy, which is a core Python package in TeV gamma-ray astronomy. We acknowledge the Gammapy development team and any users which provided feedback. In addition, we also acknowledge Astropy \citep[a Python package with which we are affiliated with,][]{2013_astropy}, and other important Python packages we depend on: Numpy, Scipy and Matplotlib.
 \end{acknowledgements}
 
-
 \bibliographystyle{aa}
 \bibliography{bibliography}
 
+\begin{appendix} 
 
+\section{Code example output}
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=\columnwidth]{figures/code_snippet_new.png}
+\caption{Output from the code example shown in Fig. \ref{fig:code_snippet}.}
+\label{fig:code_output}
+\end{figure}
+
+
+\section{Chi-squared maximum derivations}
+\label{sec:calc_chi2_max}
+For a single chi-squared measurement,\begin{equation}
+P(x>X) = \int_X^\infty  f(x, df)
+\end{equation}where $f(x, df)$ is the chi-squared PDF and $df$ is the number of degrees of freedom. 
+For any $x$ to be lower than $X$, the probability is
+
+\begin{equation}
+ P(\forall x_i, x_i<X) = \prod_i  \int_X^\infty f(x, df)
+.\end{equation}Therefore, the probability that at least one $x$ is larger than $X$ is
+\begin{equation}
+\begin{split}
+P(\exists i, x_i>X) &= 1 - P(\forall x_i, x_i<X) \\
+&= 1 - \left( \int_X^\infty f(x, df) \right)^N
+\end{split}
+\label{eqn:cdf}
+.\end{equation}This is explicitly the CDF. 
+To obtain the PDF, we had to differentiate the CDF (Eq. \ref{eqn:cdf}), which led to
+
+\begin{equation}
+\begin{split}
+P(x, df) &= N f(x, df) \left( \int_X^\infty f(x, df) \right)^{(N-1)} \\
+&= N f(x, df) \left( F(x, df) \right) ^{(N-1)}
+\end{split}
+\end{equation}
+
+\end{appendix}
 
 
 
