@@ -31,6 +31,10 @@ datasets:
 
 # Custom file dependencies
 dependencies:
+  src/tex/ms.tex:
+    - src/tex/aa.cls
+    - src/tex/aa.bst
+    - src/tex/bibliography.bib
   src/scripts/fig2.py:
     - src/data/significance_map_J1825.fits
     - src/scripts/paths.py
