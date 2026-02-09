@@ -34,6 +34,15 @@ dependencies:
   src/scripts/fig2.py:
     - src/data/significance_map_J1825.fits
     - src/scripts/paths.py
+  src/scripts/fig3.py:
+    - src/data/edep_results_J1825.dat
+    - src/scripts/paths.py    
+  src/scripts/fig4.py:
+    - src/data/edep_results_mock.dat
+    - src/scripts/paths.py    
+  src/scripts/fig5.py:
+    - src/data/edep_results_alpha0.3_sigma0.1.dat    
+    - src/scripts/paths.py    
 
 # Name of the `.tex` manuscript and corresponding `.pdf` article
 ms_name: ms

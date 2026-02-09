@@ -159,6 +159,75 @@ A usage example is shown in Fig. \ref{fig:code_snippet}, corresponding to the ex
 \script{fig2.py}
 \end{figure}
 
+The \code{PowerLawSpectralModel} and \code{GaussianSpatialModel} provide reasonable initial spectral and spatial models, respectively, for the dataset, so we used them for our study. 
+The power law spectral shape is defined as follows:
+
+\begin{equation}
+\phi(E) = \phi_0 \cdot \left( \frac{E}{E_0} \right)^{-\Gamma}
+\label{eqn:pwl}
+, \end{equation}where $\phi_0$ is the amplitude, $\Gamma$ is the index of the power law fit, and $E_0$ is a normalisation energy taken here to be 1\,TeV. 
+We utilise the \code{GaussianSpatialModel} in Gammapy, keeping the asymmetry frozen to 0 for simplicity, in the different energy bands, to test for any energy-dependent morphology with our tool. 
+
+An important aspect of this new tool is to check that the energy bands chosen contain significant data. To do this, we can look at the signal above the background in each energy bin. This done by slicing the dataset into its energy bins. The null hypothesis (H$_0$) involves freezing all parameters except for the normalisation of the background, which is fitted in each energy band. The alternative hypothesis (H$_1$) allows additional parameters to be free, in this case the position and extension of the spatial model and the amplitude of the spectral model. Subsequently, the fit is performed for each energy band. These hypotheses are compared using Wilks' theorem (Eq. \ref{eqn:delta_ts}) to obtain a $\Delta\rm{TS}$ that indicates the significance of the signal relative to the background in each energy band. If each energy bin is significant above the background ($\gg5\sigma$), the energy-dependent study can continue. 
+
+The next step is to quantify any energy-dependent morphology. The null hypothesis is determined by applying the same set of parameters to all energy bands and performing the fit. In the alternative hypothesis, the free parameters of the model are fit individually within each energy band. 
+We plotted the fitted spatial models from our energy-dependent study. These are shown for each energy band in Fig. \ref{fig:spatial_ebands}.  
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/spatial_3ebands.pdf}
+\caption{Results of the estimator tool for the \hessj dataset. The different coloured rings show the fitted \code{GaussianSpatialModel} in the various energy bins along with their uncertainties. The plus symbols show the position and error from the fit. The black dot indicates the position of the pulsar, \psr.}
+\label{fig:spatial_ebands}
+\script{fig3.py}
+\end{figure}
+
+The $\Delta$TS values for each energy bin from the individual fit (H$_1$) are summed and subtracted from the $\Delta$TS of the global fit (H$_0$) to obtain a final $\Delta$TS value. This, along with the number of degrees of freedom, can be used to quantify the significance through the chi-squared test. In this example, the significance is 9.8$\sigma$, indicating that this source exhibits strong energy-dependent morphology, as expected from previous studies \citep{Aharonian_2006,Edep_Principe_2020,Edep_PWNe_HESS_2019}. We see at lower energies the emission is large and offset from the pulsar position, whilst at higher energies the emission is more compact and close to the pulsar position. 
+
+\cite{Aharonian_2006} investigated the spectral properties of \hessj in different regions to search for any energy-dependent morphology. A fit to these results gives a chi-squared value of 58 with 11 degrees of freedom. This shows that the method outlined in our paper is more sensitive.
+
+
+\subsection{Example 2: Slightly extended source}
+\label{subsec:example2}
+The second example focuses on a younger, less evolved object, which has had less time for electron cooling to occur, resulting in a smaller size. This object is expected to exhibit similar morphology to the previous case but on a much less extended scale; therefore, all traditional methods are ineffective. 
+For this weakly extended PWN, there is ambiguity about whether the source size remains consistent across different energy bins at the scale of the PSF ($0.1^{\circ}$). 
+Due to the small scale, it is not feasible to utilise other energy-dependent methods, as the source size approaches the level of the PSF. For example, to create a spatially resolved map of spectral indices would require an insufficient size for the boxes to obtain accurate results.
+
+Based on the above information, we created a mock dataset that exhibits energy-dependent morphology. This consisted of simulating a 3D dataset with a live time of 50\,hours based on the Cherenkov Telescope Array Observatory (CTAO) IRFs \citep{CTAO_IRFs}, assuming a specific source model. 
+The source is slightly extended as described by a circular emission region that follows a power law distribution $\sigma=\sigma_0 E^{-\alpha}$, where $\sigma_0=0.1^{\circ}$, $\alpha=0.3$ and $E$ is the energy axis for the given geometry.
+The source has a flux of a few percent of the Crab flux at 1\,TeV ($4.22\times 10^{-13}$\,cm$^{-2}$\,s$^{-1}$\,TeV$^{-1}$) and an index of 2.42, mimicking the gamma-ray source HESS\,J1833$-$105 \citep[a composite SNR and PWN system,][]{hgps_2018,J1833_2008}. These models are assigned to the dataset to predict the counts data based on a Poisson probability distribution. 
+To test for the energy-dependent morphology using the tool, we chose three energy bins for this example: 0.2-2\,TeV, 2-10\,TeV and 10-100\,TeV. 
+
+As shown in Fig. \ref{fig:spatial_example2_ebands}, it is possible to distinguish the morphology in different energy bins at small scales ($<0.1^{\circ}$). The energy-dependent morphology estimator yields a significant result of 9.7$\sigma$. It is shown that at low energies the emission is significantly more extended than at higher energies.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/spatial_example2_3ebands.pdf}
+\caption{Results of the estimator tool for the mock dataset. The different coloured rings show the fitted \code{GaussianSpatialModel} in the various energy bins along with their uncertainties. The plus symbols show the position and error from the fit.}
+\label{fig:spatial_example2_ebands}
+\script{fig4.py}
+\end{figure}
+
+It is important to verify that the output of the energy-dependent estimator tool is consistent with the input parameters of the simulated source. The simulated source morphology is described by a power law distribution, as described previously. Figure \ref{fig:spatial_example2_curve} shows the estimator results in blue as compared to the expected simulated source sizes in grey, indicating good agreement.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/spatial_example2_curve.pdf}
+\caption{Comparison of the variation in the extension with energy. The results obtained from the estimator for example 2 are shown in blue and the expected extension values taken from the simulated source sizes in grey. The grey line is described by a power law of $\sigma_0 E^{-\alpha}$, where $\sigma_0=0.1^{\circ}$ and $\alpha=0.3$.}
+\label{fig:spatial_example2_curve}
+\script{fig5.py}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
