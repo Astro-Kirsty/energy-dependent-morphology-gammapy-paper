@@ -151,6 +151,20 @@ In contrast, the \code{GaussianSpatialModel} is able to represent the smooth fea
 Alternative models should be used with caution and only when clearly justified by the data.
 A usage example is shown in Fig. \ref{fig:code_snippet}, corresponding to the example in Sect. \ref{subsec:example2}.
 
+
+\begin{figure}[!htb]
+\lstinputlisting[style=mypython]{code-snippets/snippet.py}
+\caption{Using the \code{EnergyDependentMorphologyEstimator} object from \code{gammapy.estimators} to quantify any energy-dependent morphology in the source of interest. The \code{energy\_edges} defined are used to investigate the potential of energy-dependent morphology in the dataset.
+The \code{gammapy.modeling.models} is used to define a source model with a spectral and spatial component. The initial parameter values are taken from a previously optimised model based on the full dataset, which accurately represents the source's morphology and spectrum. The position, extension and amplitude are let to be free as described in the text. The output of the code example is shown in \autoref{fig:code_output}.}
+\label{fig:code_snippet}
+\end{figure}
+
+
+\section{Application examples}
+\label{sec:examples}
+\subsection{Example 1: \hessj}
+To demonstrate the functionality of the tool, we showcase two examples. In the first example, we utilise a subset of the H.E.S.S. data towards \hessj from \cite{Aharonian_2006}. Three energy bins are chosen for this study: 0.4-2\,TeV, 2-10\,TeV and 10-100\,TeV. For this specific example, a mask is applied to exclude the emission from the microquasar LS\,5039 and the source HESS\,J1826$-$130. As shown by Fig. \ref{fig:dataset_ebands}, the dataset shows three distinct energy bins. 
+
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=0.99\columnwidth]{figures/dataset_ebands.pdf}
